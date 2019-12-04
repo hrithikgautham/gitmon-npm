@@ -19,7 +19,7 @@ async function folderize(userFolderName) {
 async function gittify(
     folderName, 
     {   
-        srcFolderName,
+        srcFolder,
         numOfChars,
         HALG,
         ext,
@@ -40,7 +40,7 @@ async function gittify(
             throw new Error(`number of characters for forder name cannot exceed ${mp[HALG]} for ${HALG} hash algorithm!`);
         if(!availableExtensions.includes(ext))
             throw new Error(`${ext} extension not available`);
-        const sourcePath = path.join(__dirname, "..", "..", "..", srcFolderName); // ..
+        const sourcePath = path.join(__dirname, "..", "..", "..", srcFolder); // ..
         const fileNames = await fsPromises.readdir(sourcePath);
         for(let i = 0 ; i < fileNames.length ; i++) {
             const originalFile = path.join(sourcePath, fileNames[i]);
@@ -54,6 +54,8 @@ async function gittify(
             // await fsPromises.appendFile(path.join(folderName));
             const targetFileName = hash.slice(numOfChars, hash.length);
             const targetFileNameWithExt = ext === "" ? targetFileName : `${targetFileName}.${ext}`;
+            i(ext === '.json')
+                data = JSON.stringify(data);
             await fsPromises.writeFile(path.join(folderName, dir, targetFileNameWithExt), data);// uncompressed
             // fs
             //     .createReadStream(originalFile, 'utf8')

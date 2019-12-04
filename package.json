@@ -1,6 +1,6 @@
 {
   "name": "gitmon",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "renovate your directories into git-directory format.",
   "main": "index.js",
   "scripts": {
