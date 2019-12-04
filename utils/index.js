@@ -7,7 +7,7 @@ const { getHash } = require('block-pow');
 async function folderize(userFolderName) {
     // userFolderName is the absolute path from the root directory of the user
     try {
-        const actualPath = path.join(__dirname, "..", "..", userFolderName); // ..
+        const actualPath = path.join(__dirname, "..", "..", "..", userFolderName); // ..
         await fsPromises.mkdir(actualPath);
         return actualPath;
     }
@@ -40,7 +40,7 @@ async function gittify(
             throw new Error(`number of characters for forder name cannot exceed ${mp[HALG]} for ${HALG} hash algorithm!`);
         if(!availableExtensions.includes(ext))
             throw new Error(`${ext} extension not available`);
-        const sourcePath = path.join(__dirname, "..", "..", srcFolderName); // ..
+        const sourcePath = path.join(__dirname, "..", "..", "..", srcFolderName); // ..
         const fileNames = await fsPromises.readdir(sourcePath);
         for(let i = 0 ; i < fileNames.length ; i++) {
             const originalFile = path.join(sourcePath, fileNames[i]);
