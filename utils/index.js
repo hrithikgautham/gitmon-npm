@@ -19,8 +19,8 @@ async function folderize(userFolderName) {
 async function gittify(
     folderName, 
     {   
-        sourceFolderName,
-        charactersForFolderName,
+        srcFolderName,
+        numOfChars,
         HALG,
         ext,
         deleteSrc
@@ -36,11 +36,11 @@ async function gittify(
         ]);
         if(!availableHashingAlgorithms.includes(HALG))
             throw new Error(`${HALG} hash algorithm is unavailable!`);
-        if(charactersForFolderName >= mp[HALG])
+        if(numOfChars >= mp[HALG])
             throw new Error(`number of characters for forder name cannot exceed ${mp[HALG]} for ${HALG} hash algorithm!`);
         if(!availableExtensions.includes(ext))
             throw new Error(`${ext} extension not available`);
-        const sourcePath = path.join(__dirname, "..", "..", sourceFolderName); // ..
+        const sourcePath = path.join(__dirname, "..", "..", srcFolderName); // ..
         const fileNames = await fsPromises.readdir(sourcePath);
         for(let i = 0 ; i < fileNames.length ; i++) {
             const originalFile = path.join(sourcePath, fileNames[i]);
@@ -48,11 +48,11 @@ async function gittify(
             const hash = await getHash(data, "", "", HALG);
             const folderizeFiles = await fsPromises.readdir(path.join(folderName));
             // for(let i = 0 ; i < folderizeFiles ; i++) {
-            const dir = hash.slice(0, charactersForFolderName);
+            const dir = hash.slice(0, numOfChars);
             if(!folderizeFiles.includes(dir))
                 await fsPromises.mkdir(path.join(folderName, dir));
             // await fsPromises.appendFile(path.join(folderName));
-            const targetFileName = hash.slice(charactersForFolderName, hash.length);
+            const targetFileName = hash.slice(numOfChars, hash.length);
             const targetFileNameWithExt = ext === "" ? targetFileName : `${targetFileName}.${ext}`;
             await fsPromises.writeFile(path.join(folderName, dir, targetFileNameWithExt), data);// uncompressed
             // fs
@@ -68,7 +68,7 @@ async function gittify(
         }
     }
     catch(err) {
-        console.error(err);
+        console.error("Error: ", err);
     }
 }
 
