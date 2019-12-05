@@ -7,7 +7,7 @@ const { getHash } = require('block-pow');
 async function folderize(userFolderName) {
     // userFolderName is the absolute path from the root directory of the user
     try {
-        const actualPath = path.join(__dirname, "..", "..", "..", userFolderName); // ..
+        const actualPath = path.join(__dirname, "..", userFolderName); // ..
         await fsPromises.mkdir(actualPath);
         return actualPath;
     }
@@ -40,11 +40,11 @@ async function gittify(
             throw new Error(`number of characters for forder name cannot exceed ${mp[HALG]} for ${HALG} hash algorithm!`);
         if(!availableExtensions.includes(ext))
             throw new Error(`${ext} extension not available`);
-        const sourcePath = path.join(__dirname, "..", "..", "..", srcFolder); // ..
+        const sourcePath = path.join(__dirname, "..", srcFolder); // ..
         const fileNames = await fsPromises.readdir(sourcePath);
         for(let i = 0 ; i < fileNames.length ; i++) {
             const originalFile = path.join(sourcePath, fileNames[i]);
-            const data = await fsPromises.readFile(originalFile, 'utf8');
+            let data = await fsPromises.readFile(originalFile, 'utf8');
             const hash = await getHash(data, "", "", HALG);
             const folderizeFiles = await fsPromises.readdir(path.join(folderName));
             // for(let i = 0 ; i < folderizeFiles ; i++) {
@@ -63,11 +63,26 @@ async function gittify(
             //     .pipe(fs.createWriteStream(path.join(folderName, dir)))
             //     .on(error => { throw new Error(error); })
         }
-        if(deleteSrc) {
+        const typeOfDeleteSrc = typeof deleteSrc;
+        if(deleteSrc === 'onlyFiles') {
             for(let i = 0 ; i < fileNames.length ; i++) 
                 await fsPromises.unlink(path.join(sourcePath, fileNames[i]));
-            await fsPromises.rmdir(sourcePath); // delete source folder
-        }
+        } 
+        else if(typeOfDeleteSrc === 'boolean' && !deleteSrc)
+            return;
+        if(typeOfDeleteSrc === 'boolean' && deleteSrc)
+            await fsPromises.rmdir(sourcePath);
+        // if(typeof deleteSrc === 'boolean') {
+        //     if(boolean) {
+        //         for(let i = 0 ; i < fileNames.length ; i++) 
+        //             await fsPromises.unlink(path.join(sourcePath, fileNames[i]));
+        //         await fsPromises.rmdir(sourcePath);
+        //     }
+        // }
+        // else if(typeof deleteSrc === 'string' && deleteSrc === 'onlyFiles') {
+        //     for(let i = 0 ; i < fileNames.length ; i++) 
+        //         await fsPromises.unlink(path.join(sourcePath, fileNames[i]));
+        // }
     }
     catch(err) {
         console.error("Error: ", err);

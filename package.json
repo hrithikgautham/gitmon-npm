@@ -1,6 +1,6 @@
 {
   "name": "gitmon",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "renovate your directories into .git/objects format.",
   "main": "index.js",
   "scripts": {

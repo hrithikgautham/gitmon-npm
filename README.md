@@ -7,7 +7,7 @@ Simple way to make your folders look like .git/objects folder.
     const srcFolder = 'oldFolder';<br>
     const numOfChars = 2;<br>
     const HALG = 'sha256';<br>
-    const deleteSrc = true;<br>
+    const deleteSrc = true; // can also be a string<br>
     const ext = '.txt';<br>
     folderize(targetFolder)<br>.then(targetFolderPath => gittify(targetFolderPath,<br>{<br><blockquote>srcFolder,<br>numOfChars,<br>HALG,<br>deleteSrc,<br>ext</blockquote>}))<br>.catch(err => console.error);
 </code>
@@ -23,13 +23,14 @@ Simple way to make your folders look like .git/objects folder.
 * ***ext*** is the extension of the file.
 * ***HALG*** is a string specifying the *Hashing Algorithm* to be used in the process.
 * E.g, if the ***srcFolder**/sample.txt* is the file you wish to use. Let the hash of the contents of the file be *"abcded639ecb4a3ac95389bbdf05c434e4df5534"(sha1)*, then a folder named *"ab"* will be generated in ***targetFolder***, and the rest of the characters of the hash, i.e, *"cded639ecb4a3ac95389bbdf05c434e4df5534"* will be the name of the file with ***ext*** extension. To summarise, a file named *"cded639ecb4a3ac95389bbdf05c434e4df5534"* with extension ***ext*** can be found in ***targetFolder**/ab*.Hence, the relative path to the file from root is ****targetFolder***/ab/cded639ecb4a3ac95389bbdf05c434e4df5534.***ext****.
-* If ***deleteSrc*** is *true*, then ***srcFolder*** will be *deleted* after conversion.
+* If ***deleteSrc*** is *true*, then ***srcFolder*** will be *deleted* after conversion (files inside ***srcFolder*** will also be deleted), else the files and ***srcFolder** remains untouched.
+* If ***deleteSrc*** is *"onlyFiles"*, then only the files inside ***srcFolder*** will be deleted.
 
 ## *Constraints:*<br>
 ***HALG*** *(string)* can take values which can be found in ['sha1', 'sha256', 'sha512'].<br>
 ***ext*** *(string)* can take values which can be found in ['.json', '.txt', ""].<br>
 ***numOfChars*** is an *integer*.<br>
-***deleteSrc*** is a *boolean*.
+***deleteSrc*** is a *boolean* or a *string*.
 <br><br>
 
 # ***THANK YOU!***<br>
