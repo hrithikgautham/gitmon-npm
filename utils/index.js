@@ -63,10 +63,8 @@ async function gittify(
             const dir = hash.slice(0, numOfChars);
             if(!folderizeFiles.includes(dir) && dir !== '')
                 await fsPromises.mkdir(path.join(folderName, dir));
-            // await fsPromises.appendFile(path.join(folderName));
             const targetFileName = hash.slice(numOfChars, hash.length);
             const targetFileNameWithExt = ext === "" ? targetFileName : `${targetFileName}.${ext}`;
-            // data = JSON.stringify(data);
             await fsPromises
                     .writeFile(
                         path.join(
@@ -76,32 +74,17 @@ async function gittify(
                         ), 
                         data
                     );// uncompressed
-            // fs
-            //     .createReadStream(originalFile, 'utf8')
-            //     .pipe(gzip)
-            //     .pipe(fs.createWriteStream(path.join(folderName, dir)))
-            //     .on(error => { throw new Error(error); })
         }
-        const typeOfDeleteSrc = typeof deleteSrc;
-        if(deleteSrc === 'onlyFiles') {
-            for(let i = 0 ; i < fileNames.length ; i++) 
-                await fsPromises.unlink(path.join(sourcePath, fileNames[i]));
-        } 
-        else if(typeOfDeleteSrc === 'boolean' && !deleteSrc)
+        if(deleteSrc === false)
             return;
-        if(typeOfDeleteSrc === 'boolean' && deleteSrc)
-            await fsPromises.rmdir(sourcePath);
-        // if(typeof deleteSrc === 'boolean') {
-        //     if(boolean) {
-        //         for(let i = 0 ; i < fileNames.length ; i++) 
-        //             await fsPromises.unlink(path.join(sourcePath, fileNames[i]));
-        //         await fsPromises.rmdir(sourcePath);
-        //     }
-        // }
-        // else if(typeof deleteSrc === 'string' && deleteSrc === 'onlyFiles') {
-        //     for(let i = 0 ; i < fileNames.length ; i++) 
-        //         await fsPromises.unlink(path.join(sourcePath, fileNames[i]));
-        // }
+        else if(deleteSrc === true || deleteSrc === 'onlyFiles'){
+            for(let i = 0 ; i < fileNames.length ; i++)
+                await fsPromises.unlink(path.join(sourcePath, fileNames[i]));
+            if(deleteSrc === true)
+                await fsPromises.rmdir(sourcePath);
+        }
+        else
+            throw new Error('invalid value given for deleteSrc');
     }
     catch(err) {
         console.error("Error: ", err);
