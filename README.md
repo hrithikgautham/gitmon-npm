@@ -4,7 +4,7 @@ Simple way to make your folders look like .git/objects folder.
 <code>
     const { folderize, gittify } = require('gitmon');<br>const path = require('path');<br>
     const targetFolder = path.join("new-folder"); <br>/*relative path from the root directory should be used, hence __dirname is not required*/<br>/* path.join() is not necessary here(because only on word is used to describe the folder) */<br>
-    const srcFolder = 'oldFolder';<br>
+    const srcFolder = 'oldFolder';/* this can also be an array*/<br>
     const numOfChars = 2;<br>
     const HALG = 'sha256';<br>
     const deleteSrc = true; // can also be a string<br>
@@ -18,6 +18,7 @@ Simple way to make your folders look like .git/objects folder.
 * In the above code, *path* module is used to create path(relative to your root directory). If u want to create folder in the root directory itself, u can just use *string*, no need for path.join().
 * As you can see *__dirname* is not used. This is crucial, as the path.join() must not include *__dirname* as a parameter in *path.join()* for ***targetFolder***.
 * Now, ***srcFolder*** *(path relative to root folder without *__dirname*)* has the required files which has to be converted to *.git/objects* folder.
+* ***srcFolder*** can also be an *Array*, instead of *source folder path*;
 * ***numOfChars*** is an *interger*, which indicates the *number of characters from which the folder in ***targetFolder*** has to be named from the hash of the contents of each file in ***srcFolder****.
 * The remaining characters in the hash, i.e, *size-of-hash* - ***numOfChars*** remaining charaters of the hash is used to name the *file*, whose hash is used to name the *folder* and the *file*.
 * ***ext*** is the extension of the file.

@@ -1,10 +1,10 @@
 {
   "name": "gitmon",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "renovate your directories into .git/objects format.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node prac"
   },
   "repository": {
     "type": "git",

@@ -7,7 +7,7 @@ const { getHash } = require('block-pow');
 async function folderize(userFolderName) {
     // userFolderName is the absolute path from the root directory of the user
     try {
-        const actualPath = path.join(__dirname, "..", "..", "..", userFolderName); // ..
+        const actualPath = path.join(__dirname, "..", userFolderName); // ..
         await fsPromises.mkdir(actualPath);
         return actualPath;
     }
@@ -42,13 +42,23 @@ async function gittify(
             throw new Error(`number of characters for forder name cannot exceed ${mp[HALG]} for ${HALG} hash algorithm!`);
         if(!availableExtensions.includes(ext))
             throw new Error(`${ext} extension not available`);
-        const sourcePath = path.join(__dirname, "..", "..", "..", srcFolder); // ..
-        const fileNames = await fsPromises.readdir(sourcePath);
+        let sourcePath; // ..
+        let fileNames = srcFolder;
+        const isSrcFolderString = typeof srcFolder === 'string';
+        if(isSrcFolderString){
+            sourcePath = path.join(__dirname, "..", srcFolder);
+            fileNames = await fsPromises.readdir(sourcePath);
+        }
         for(let i = 0 ; i < fileNames.length ; i++) {
-            const originalFile = path.join(sourcePath, fileNames[i]);
-            let data = await fsPromises.readFile(originalFile, 'utf8');
+            let originalFile;
+            let data = fileNames[i];
+            if(isSrcFolderString) { // if srcPath is a string, readFile
+                originalFile = path.join(sourcePath, fileNames[i]); 
+                data = await fsPromises.readFile(originalFile, 'utf8');
+            }
+            data = JSON.stringify(data);
             const hash = await getHash(data, "", "", HALG);
-            const folderizeFiles = await fsPromises.readdir(path.join(folderName));
+            const folderizeFiles = await fsPromises.readdir(folderName);
             // for(let i = 0 ; i < folderizeFiles ; i++) {
             const dir = hash.slice(0, numOfChars);
             if(!folderizeFiles.includes(dir) && dir !== '')
@@ -56,9 +66,16 @@ async function gittify(
             // await fsPromises.appendFile(path.join(folderName));
             const targetFileName = hash.slice(numOfChars, hash.length);
             const targetFileNameWithExt = ext === "" ? targetFileName : `${targetFileName}.${ext}`;
-            if(ext === '.json')
-                data = JSON.stringify(data);
-            await fsPromises.writeFile(path.join(folderName, dir, targetFileNameWithExt), data);// uncompressed
+            // data = JSON.stringify(data);
+            await fsPromises
+                    .writeFile(
+                        path.join(
+                            folderName, 
+                            dir, 
+                            targetFileNameWithExt
+                        ), 
+                        data
+                    );// uncompressed
             // fs
             //     .createReadStream(originalFile, 'utf8')
             //     .pipe(gzip)
