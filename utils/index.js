@@ -54,7 +54,7 @@ async function gittify(
             // await fsPromises.appendFile(path.join(folderName));
             const targetFileName = hash.slice(numOfChars, hash.length);
             const targetFileNameWithExt = ext === "" ? targetFileName : `${targetFileName}.${ext}`;
-            i(ext === '.json')
+            if(ext === '.json')
                 data = JSON.stringify(data);
             await fsPromises.writeFile(path.join(folderName, dir, targetFileNameWithExt), data);// uncompressed
             // fs
