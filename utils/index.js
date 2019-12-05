@@ -27,6 +27,8 @@ async function gittify(
     }
 ) {
     try {
+        if(numOfChars < 0)
+            throw new Error('numChars cannot be negative!');
         const availableHashingAlgorithms = ['sha256', 'sha512', 'sha1'];
         const availableExtensions = ['.json', '.txt', ""];
         const mp = new Map([
@@ -49,7 +51,7 @@ async function gittify(
             const folderizeFiles = await fsPromises.readdir(path.join(folderName));
             // for(let i = 0 ; i < folderizeFiles ; i++) {
             const dir = hash.slice(0, numOfChars);
-            if(!folderizeFiles.includes(dir))
+            if(!folderizeFiles.includes(dir) && dir !== '')
                 await fsPromises.mkdir(path.join(folderName, dir));
             // await fsPromises.appendFile(path.join(folderName));
             const targetFileName = hash.slice(numOfChars, hash.length);
