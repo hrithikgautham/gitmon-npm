@@ -3,7 +3,7 @@ Simple way to make your folders look like .git/objects folder.
 ## *USAGE:*
 <code>
     const { folderize, gittify } = require('gitmon');<br>const path = require('path');<br>
-    const targetFolder = path.join("new-folder"); <br>/* path.join() is not necessary here(because only on word is used to describe the folder) */<br>
+    const targetFolder = path.join("new-folder"); <br>/*relative path from the root direcctory should be used, hence __dirname is not required*/<br>/* path.join() is not necessary here(because only on word is used to describe the folder) */<br>
     const srcFolder = 'oldFolder';<br>
     const numOfChars = 2;<br>
     const HALG = 'sha256';<br>
