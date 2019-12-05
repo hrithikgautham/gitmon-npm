@@ -7,7 +7,7 @@ const { getHash } = require('block-pow');
 async function folderize(userFolderName) {
     // userFolderName is the absolute path from the root directory of the user
     try {
-        const actualPath = path.join(__dirname, "..", userFolderName); // ..
+        const actualPath = path.join(__dirname, "..", "..", "..", userFolderName); // ..
         await fsPromises.mkdir(actualPath);
         return actualPath;
     }
@@ -46,7 +46,7 @@ async function gittify(
         let fileNames = srcFolder;
         const isSrcFolderString = typeof srcFolder === 'string';
         if(isSrcFolderString){
-            sourcePath = path.join(__dirname, "..", srcFolder);
+            sourcePath = path.join(__dirname, "..", "..", "..", srcFolder);
             fileNames = await fsPromises.readdir(sourcePath);
         }
         for(let i = 0 ; i < fileNames.length ; i++) {
