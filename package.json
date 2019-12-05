@@ -1,7 +1,7 @@
 {
   "name": "gitmon",
-  "version": "1.0.6",
-  "description": "renovate your directories into git-directory format.",
+  "version": "1.0.7",
+  "description": "renovate your directories into .git/objects format.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
