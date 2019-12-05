@@ -75,16 +75,18 @@ async function gittify(
                         data
                     );// uncompressed
         }
-        if(deleteSrc === false)
-            return;
-        else if(deleteSrc === true || deleteSrc === 'onlyFiles'){
-            for(let i = 0 ; i < fileNames.length ; i++)
-                await fsPromises.unlink(path.join(sourcePath, fileNames[i]));
-            if(deleteSrc === true)
-                await fsPromises.rmdir(sourcePath);
+        if(isSrcFolderString) {
+            if(deleteSrc === false)
+                return;
+            else if(deleteSrc === true || deleteSrc === 'onlyFiles'){
+                for(let i = 0 ; i < fileNames.length ; i++)
+                    await fsPromises.unlink(path.join(sourcePath, fileNames[i]));
+                if(deleteSrc === true)
+                    await fsPromises.rmdir(sourcePath);
+            }
+            else
+                throw new Error('invalid value given for deleteSrc');
         }
-        else
-            throw new Error('invalid value given for deleteSrc');
     }
     catch(err) {
         console.error("Error: ", err);
