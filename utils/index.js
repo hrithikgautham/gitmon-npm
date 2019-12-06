@@ -11,7 +11,7 @@ async function folderize(userFolderName) {
         await fsPromises.mkdir(userFolderName);
     }
     catch(err) {
-        console.error("Error: directory already exists! err: ", err);
+        throw new Error('folderize failed!');
     }
 }
 
@@ -26,7 +26,7 @@ async function gittify(
     }
 ) {
     try {
-        console.log("srcPAth: ", srcFolder);
+        // console.log("srcPAth: ", srcFolder);
         if(numOfChars < 0)
             throw new Error('numChars cannot be negative!');
         const availableHashingAlgorithms = ['sha256', 'sha512', 'sha1'];
@@ -99,7 +99,7 @@ async function gittify(
         }
     }
     catch(err) {
-        console.error("Error: ", err);
+        throw new Error('gittify failed');
     }
 }
 
