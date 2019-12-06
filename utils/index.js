@@ -80,14 +80,14 @@ async function gittify(
             const targetFileName = hash.slice(numOfChars, hash.length);
             const targetFileNameWithExt = ext === "" ? targetFileName : `${targetFileName}.${ext}`;
             await fsPromises
-                .writeFile(
-                    path.join(
-                        targetFolderName, 
-                        dir, 
-                        targetFileNameWithExt
-                    ),
-                    data
-                );
+                    .writeFile(
+                        path.join(
+                            targetFolderName, 
+                            dir, 
+                            targetFileNameWithExt
+                        ),
+                        data
+                    );
             // uncompressed
         }
         if(isSrcFolderString) {
