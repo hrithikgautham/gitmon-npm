@@ -7,9 +7,8 @@ const { getHash } = require('block-pow');
 async function folderize(userFolderName) {
     // userFolderName is the absolute path from the root directory of the user
     try {
-        const actualPath = path.join(__dirname, "..", "..", "..", userFolderName); // ..
-        await fsPromises.mkdir(actualPath);
-        return actualPath;
+        // const actualPath = path.join(__dirname, "..", userFolderName); // ..
+        await fsPromises.mkdir(userFolderName);
     }
     catch(err) {
         console.error("Error: directory already exists! err: ", err);
@@ -17,7 +16,7 @@ async function folderize(userFolderName) {
 }
 
 async function gittify(
-    folderName, 
+    targetFolderName, 
     {   
         srcFolder,
         numOfChars,
@@ -27,6 +26,7 @@ async function gittify(
     }
 ) {
     try {
+        console.log("srcPAth: ", srcFolder);
         if(numOfChars < 0)
             throw new Error('numChars cannot be negative!');
         const availableHashingAlgorithms = ['sha256', 'sha512', 'sha1'];
@@ -42,50 +42,60 @@ async function gittify(
             throw new Error(`number of characters for forder name cannot exceed ${mp[HALG]} for ${HALG} hash algorithm!`);
         if(!availableExtensions.includes(ext))
             throw new Error(`${ext} extension not available`);
-        let sourcePath; // ..
+        // let srcFolder; // ..
         let fileNames = srcFolder;
         const isSrcFolderString = typeof srcFolder === 'string';
-        if(isSrcFolderString){
-            sourcePath = path.join(__dirname, "..", "..", "..", srcFolder);
-            fileNames = await fsPromises.readdir(sourcePath);
-        }
+        if(isSrcFolderString)
+            fileNames = await fsPromises.readdir(srcFolder);
         for(let i = 0 ; i < fileNames.length ; i++) {
-            let originalFile;
+            // console.log("stats of this file: ", stats.isDirectory(fileNames[i]));
+            let originalFileOrFolder;
             let data = fileNames[i];
+            // let stat;
             if(isSrcFolderString) { // if srcPath is a string, readFile
-                originalFile = path.join(sourcePath, fileNames[i]); 
-                data = await fsPromises.readFile(originalFile, 'utf8');
+                originalFileOrFolder = path.join(srcFolder, fileNames[i]);
+                const stat = await fsPromises.stat(originalFileOrFolder);
+                if(stat.isDirectory()){
+                    await gittify(
+                        targetFolderName,
+                        {
+                            srcFolder: originalFileOrFolder,
+                            numOfChars,
+                            HALG,
+                            ext,
+                            deleteSrc
+                        }
+                    );
+                    continue;
+                }
+                data = await fsPromises.readFile(originalFileOrFolder, 'utf8');
             }
             data = JSON.stringify(data);
             const hash = await getHash(data, "", "", HALG);
-            const folderizeFiles = await fsPromises.readdir(folderName);
+            const folderizeFiles = await fsPromises.readdir(targetFolderName);
             // for(let i = 0 ; i < folderizeFiles ; i++) {
             const dir = hash.slice(0, numOfChars);
             if(!folderizeFiles.includes(dir) && dir !== '')
-                await fsPromises.mkdir(path.join(folderName, dir));
+                await fsPromises.mkdir(path.join(targetFolderName, dir));
             const targetFileName = hash.slice(numOfChars, hash.length);
             const targetFileNameWithExt = ext === "" ? targetFileName : `${targetFileName}.${ext}`;
             await fsPromises
-                    .writeFile(
-                        path.join(
-                            folderName, 
-                            dir, 
-                            targetFileNameWithExt
-                        ), 
-                        data
-                    );// uncompressed
+                .writeFile(
+                    path.join(
+                        targetFolderName, 
+                        dir, 
+                        targetFileNameWithExt
+                    ),
+                    data
+                );
+            // uncompressed
         }
         if(isSrcFolderString) {
-            if(deleteSrc === false)
-                return;
-            else if(deleteSrc === true || deleteSrc === 'onlyFiles'){
+            if(deleteSrc === true){
                 for(let i = 0 ; i < fileNames.length ; i++)
-                    await fsPromises.unlink(path.join(sourcePath, fileNames[i]));
-                if(deleteSrc === true)
-                    await fsPromises.rmdir(sourcePath);
+                    await fsPromises.unlink(path.join(srcFolder, fileNames[i]));
+                await fsPromises.rmdir(srcFolder);
             }
-            else
-                throw new Error('invalid value given for deleteSrc');
         }
     }
     catch(err) {
