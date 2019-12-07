@@ -42,6 +42,8 @@ async function gittify(
             throw new Error(`number of characters for forder name cannot exceed ${mp[HALG]} for ${HALG} hash algorithm!`);
         if(!availableExtensions.includes(ext))
             throw new Error(`${ext} extension not available`);
+        if(typeof deleteSrc !== 'boolean')
+            throw new Error(`deleteSrc must be of type boolean!`);
         // let srcFolder; // ..
         let fileNames = srcFolder;
         const isSrcFolderString = typeof srcFolder === 'string';
