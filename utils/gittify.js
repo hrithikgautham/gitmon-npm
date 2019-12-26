@@ -119,12 +119,10 @@ async function gittifyUtil(
                         data
                     ); // uncompressed
         }
-        if(isSrcFolderString) {
-            if(deleteSrc){
-                for(let i = 0 ; i < fileNames.length ; i++)
-                    await fsPromises.unlink(path.join(srcFolder, fileNames[i]));
-                await fsPromises.rmdir(srcFolder);
-            }
+        if(isSrcFolderString && deleteSrc) {
+            for(let i = 0 ; i < fileNames.length ; i++)
+                await fsPromises.unlink(path.join(srcFolder, fileNames[i]));
+            await fsPromises.rmdir(srcFolder);
         }
     }
     catch(err) {
