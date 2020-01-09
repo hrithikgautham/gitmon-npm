@@ -1,3 +1,5 @@
+"use strict"
+
 // what do i need?
 // get the folder path from user
 // the path should start from path.join("..","..", "user input path")
