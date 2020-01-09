@@ -1,6 +1,6 @@
 {
   "name": "gitmon",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "renovate your directories into .git/objects format.",
   "main": "index.js",
   "scripts": {
@@ -21,6 +21,6 @@
   "author": "Hrithik Gautham TG",
   "license": "ISC",
   "dependencies": {
-    "block-pow": "^2.0.5"
+    "block-pow": "^2.0.6"
   }
 }
