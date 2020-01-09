@@ -14,7 +14,6 @@ async function gittify(
         HALG = check("HALG(String) is missing!"),
         ext = check("ext(String) is missing!"),
         deleteSrc = typeof srcFolder === 'string' && check("deleteSrc is missing!"),
-        sameStruct = check("sameStruct(Boolean) is missing!")
     }
 ) 
 {
@@ -23,8 +22,8 @@ async function gittify(
             throw new Error(`srcFolder must be of type string or array!`);
         if(typeof ext !== 'string' || typeof HALG !== 'string')
             throw new Error(`ext, HALG must be of type string!`);
-        if(typeof sameStruct !== 'boolean' || typeof deleteSrc !== 'boolean')
-            throw new Error(`sameStruct, deleteSrc must be of type boolean!`);
+        if(typeof deleteSrc !== 'boolean')
+            throw new Error(`deleteSrc must be of type boolean!`);
         if(numOfChars < 0 || typeof numOfChars !== 'number')
             throw new Error('numChars must be of type number and cannot be negative!');
         const availableHashingAlgorithms = ['sha256', 'sha512', 'sha1'];
@@ -48,7 +47,6 @@ async function gittify(
                 HALG,
                 ext,
                 deleteSrc,
-                sameStruct
             }
         );
     }
@@ -65,7 +63,6 @@ async function gittifyUtil(
         HALG,
         ext,
         deleteSrc,
-        sameStruct
     }
 ) 
 {
@@ -81,12 +78,6 @@ async function gittifyUtil(
                 originalFileOrFolder = path.join(srcFolder, fileNames[i]);
                 const stat = await fsPromises.stat(originalFileOrFolder);
                 if(stat.isDirectory()){
-                    const temp = targetFolderName;
-                    if(sameStruct) {
-                        const folderHash = await getHash(data, "", "", HALG); // use the folder name to create the hash for name of the target folder
-                        targetFolderName = path.join(targetFolderName, folderHash);
-                        await fsPromises.mkdir(targetFolderName);
-                    }
                     await gittifyUtil(
                         targetFolderName,
                         {
@@ -95,10 +86,8 @@ async function gittifyUtil(
                             HALG,
                             ext,
                             deleteSrc,
-                            sameStruct
                         }
                     );
-                    targetFolderName = temp;
                     continue;
                 }
                 data = await fsPromises.readFile(originalFileOrFolder, 'utf8');
